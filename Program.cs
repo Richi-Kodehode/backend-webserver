@@ -1,7 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () =>
+{
+    var jsonPayload = new { message = "Hello", content = "Testing Testing" }
+    return Result.Ok();
+});
 
 app.MapGet("/", () =>
 {
