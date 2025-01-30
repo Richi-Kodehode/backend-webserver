@@ -3,28 +3,28 @@ var app = builder.Build();
 
 app.MapGet("/", () =>
 {
-    var jsonPayload = new { message = "Hello", content = "Testing Testing" }
-    return Result.Ok();
+    // return Results.Ok(new { message = "Hello", content = "Testing testing" });
+    var jsonPayload = new { message = "Hello", content = "Testing testing" };
+    return Results.Ok(jsonPayload);
 });
 
-app.MapGet("/", () =>
+app.MapPost("/", (BorrowRequest requestBody) =>
 {
-    return "Get from '/'";
+    Console.WriteLine($"Message: {requestBody.Message}");
+    Console.WriteLine($"Number: {requestBody.Number}");
+
+    return Results.Accepted();
 });
 
-app.MapPost("/", () =>
+app.MapPut("/{articlId}", (int articlId) =>
 {
-    return "Posting to '/'";
-});
-
-app.MapPut("/", () =>
-{
-    return "Updating '/'";
+    Console.WriteLine($"At dynamic segment: {articlId}");
+    return Results.Accepted();
 });
 
 app.MapDelete("/", () =>
 {
-    return "Deleting '/'";
+    return Results.Created();
 });
 
 app.Run();
