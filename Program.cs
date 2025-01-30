@@ -1,30 +1,28 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () =>
+RentingService rentingService = new RentingService();
+
+app.MapGet("/books", () =>
 {
-    // return Results.Ok(new { message = "Hello", content = "Testing testing" });
-    var jsonPayload = new { message = "Hello", content = "Testing testing" };
-    return Results.Ok(jsonPayload);
+    var bookInventory = rentingService.ListAllBooks();
+    var booksList = bookInventory.Select(inventoryEntry => inventoryEntry.Key);
+
+    return Results.Ok(booksList);
 });
 
-app.MapPost("/", (BorrowRequest requestBody) =>
+app.MapPost("/borrow", (BorrowRequest borrowRequest) =>
 {
-    Console.WriteLine($"Message: {requestBody.Message}");
-    Console.WriteLine($"Number: {requestBody.Number}");
+    BorrowReciept? reciept = rentingService.BorrowBook(borrowRequest.BookTitle);
 
-    return Results.Accepted();
-});
-
-app.MapPut("/{articlId}", (int articlId) =>
-{
-    Console.WriteLine($"At dynamic segment: {articlId}");
-    return Results.Accepted();
-});
-
-app.MapDelete("/", () =>
-{
-    return Results.Created();
+    if (reciept == null)
+    {
+        return Results.BadRequest("Not Available");
+    }
+    else
+    {
+        return Results.Ok(reciept);
+    }
 });
 
 app.Run();
