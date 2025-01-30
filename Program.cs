@@ -23,6 +23,19 @@ app.MapPost("/borrow", (BorrowRequest borrowRequest) =>
     {
         return Results.Ok(reciept);
     }
-});
 
+});
+app.MapPost("/Return", (ReturnRequest returnRequest) =>
+{
+    ReturnReciept? reciept = rentingService.ReturnBook(returnRequest.BookTitle);
+
+    if (reciept == null)
+    {
+        return Results.BadRequest("No Entry");
+    }
+    else
+    {
+        return Results.Ok(reciept);
+    }
+});
 app.Run();
